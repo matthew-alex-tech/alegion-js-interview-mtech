@@ -3,6 +3,7 @@
 <head>
     <title>Super Hero Co.</title>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.5.0.js"></script>
     <script src="resources/app.module.js"></script>
     <script src="resources/UserManagement.service.js"></script>
     <script src="resources/UserManagement.controller.js"></script>
@@ -47,7 +48,7 @@
                                     <p class="card-text" ng-show="!inEditMode || userInEdit!==user">{{user.email}}</p>
                                     <input class="edit-input" type="text" ng-show="inEditMode && userInEdit===user" class="card-title" ng-model="user.emailEdit"/>
                                     <button class="btn" ng-show="!inEditMode" ng-click="editUser(user)"><i class="fa fa-edit" style="font-size:36px"></i></button>
-                                    <button class="btn" ng-show="!inEditMode" ng-click="deleteUser(user)"><i class="fa fa-trash" style="font-size:36px"></i></button>
+                                    <button class="btn" ng-show="!inEditMode" ng-click="deleteUser(user, usersList)"><i class="fa fa-trash" style="font-size:36px"></i></button>
                                     <button class="btn" ng-show="inEditMode && userInEdit===user" ng-click="acceptEdit(user)" ng-disabled="disableAcceptEdit(user)"><i class="edit-check fa fa-check"></i></button>
                                     <button class="btn" ng-show="inEditMode && userInEdit===user" ng-click="cancelEdit(user)"><i class="edit-close fa fa-close"></i></button>
                                 </div>
@@ -60,4 +61,5 @@
     </div>
 </div>
 </body>
+
 </html>

@@ -1,12 +1,13 @@
-angular.module('app').controller('UserManagementController', ['$scope', 'UserManagementService', function ($scope, UserManagementService) {
+angular.module('app').controller('UserManagementController', ['$scope', 'UserManagementService', '$uibModal',
+        function ($scope, UserManagementService, $uibModal) {
 
     /////////////////////////////////////////////////////////////////////////
-    // load the list of users first
+    // load the initial list of users first
     /////////////////////////////////////////////////////////////////////////
     $scope.usersList = [];
     $scope.loadUsersList = function() {
         return UserManagementService.getUsersList().then(function(response){
-            console.log(response);
+//            console.log(response);
             for (var i=0; i < response.length; i++) {
                 var user = response[i];
                 user.nameOrig = user.first_name + " " + user.last_name;
@@ -37,11 +38,12 @@ angular.module('app').controller('UserManagementController', ['$scope', 'UserMan
     $scope.acceptEdit = function(user) {
         $scope.inEditMode = false;
         $scope.userInEdit = {};
-        // TODO call service
-        console.log("TODO call edit service");
-        // only on success
-        user.nameOrig = user.nameEdit;
-        user.email = user.emailEdit;
+        // call service
+        UserManagementService.updateUser(user).then(function(response){
+            // only on success
+            user.nameOrig = user.nameEdit;
+            user.email = user.emailEdit;
+        });
     }
 
     $scope.cancelEdit = function(user) {
@@ -55,14 +57,43 @@ angular.module('app').controller('UserManagementController', ['$scope', 'UserMan
     /////////////////////////////////////////////////////////////////////////
     // functions for deleting the user
     /////////////////////////////////////////////////////////////////////////
-    $scope.deleteUser = function(user) {
-        // TODO open confirmation dialog
 
-        // TODO call service
-        console.log("TODO call delete service");
+    $scope.deleteUser = function(user, usersList) {
+        // open confirmation dialog
+        var modalInstance = $uibModal.open({
+            templateUrl: 'deleteModal.html',
+            controller: function ($scope, $uibModalInstance) {
+                $scope.username = user.nameOrig;
 
-        // on success
-        $scope.loadUsersList();
+                $scope.ok = function () {
+                    $uibModalInstance.close();
+                    console.log(user);
+                    // call service
+                    UserManagementService.deleteUser(user).then(function(response){
+                        // only on success
+                        $scope.deleteUserFromList(user, usersList);
+                    });
+                };
+
+                $scope.cancel = function () {
+                    $uibModalInstance.dismiss('cancel');
+                };
+
+                $scope.deleteUserFromList = function(userToDelete, usersList) {
+                    var indexToDelete = -1;
+                    for (var i=0; i < usersList.length; i++) {
+                        var user = usersList[i];
+                        if (user.id === userToDelete.id) {
+                            indexToDelete = i;
+                        }
+                    }
+                    if (indexToDelete >= 0) {
+                        usersList.splice(indexToDelete, 1);
+                    }
+                }
+            }
+        });
+        modalInstance.result.then(function(){}, function(res){});
     }
 
     /////////////////////////////////////////////////////////////////////////
@@ -74,7 +105,7 @@ angular.module('app').controller('UserManagementController', ['$scope', 'UserMan
         console.log("TODO add service");
 
         // on success
-        $scope.loadUsersList();
+//        $scope.loadUsersList();
     }
 
 }]);
