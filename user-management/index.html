@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Super Hero Co.</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="resources/app.module.js"></script>
+    <script src="resources/UserManagement.service.js"></script>
+    <script src="resources/UserManagement.controller.js"></script>
+    <link rel="stylesheet" type="text/css" href="resources/app.css">
+</head>
+<body>
+<div ng-app="app" ng-controller="UserManagementController">
+    <div id="container">
+        <div id="heading">Super Hero Co.</div>
+        <div id="heading">User Accounts</div>
+        <div ng-repeat='user in usersList'>
+            <p>{{user.first_name}} {{user.last_name}}</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
