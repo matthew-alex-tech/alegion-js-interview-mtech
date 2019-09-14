@@ -4,3 +4,7 @@
 	margin-bottom: 5px;
 	font-family: Segoe UI,Arial,sans-serif;
 }
+
+.card-columns {
+    column-count: 2;
+}
