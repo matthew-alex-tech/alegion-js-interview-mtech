@@ -99,13 +99,36 @@ angular.module('app').controller('UserManagementController', ['$scope', 'UserMan
     /////////////////////////////////////////////////////////////////////////
     // functions for adding a new user
     /////////////////////////////////////////////////////////////////////////
-    $scope.addUser = function() {
-        // TODO open dialog
-        console.log("TODO open dialog");
-        console.log("TODO add service");
+    $scope.addUser = function(usersList) {
+        // open dialog
+        var modalInstance = $uibModal.open({
+        templateUrl: 'createUserModal.html',
+        controller: function ($scope, $uibModalInstance) {
+            $scope.inputName = "";
+            $scope.inputEmail = "";
 
-        // on success
-//        $scope.loadUsersList();
+            $scope.ok = function () {
+                $uibModalInstance.close();
+                // call service
+                var user = {
+                    nameOrig: $scope.inputName,
+                    nameEdit: $scope.inputName,
+                    email: $scope.inputEmail,
+                    emailEdit: $scope.inputEmail
+                }
+                UserManagementService.createUser(user).then(function(response){
+                    // only on success
+                    user.id = response.data.id;
+                    usersList.push(user);
+                });
+            };
+
+            $scope.cancel = function () {
+                $uibModalInstance.dismiss('cancel');
+            };
+        }
+    });
+    modalInstance.result.then(function(){}, function(res){});
     }
 
 }]);

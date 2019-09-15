@@ -33,5 +33,16 @@ angular.module('app').factory('UserManagementService', ['$http', function($http)
             })
     }
 
+    svc.createUser = function(user) {
+        var url = "https://reqres.in/api/users";
+        return $http.post(url, user)
+            .then(function(response) {
+                // TODO error handling
+                console.log("create:");
+                console.log(response);
+                return response;
+            })
+    }
+
     return svc;
 }]);
