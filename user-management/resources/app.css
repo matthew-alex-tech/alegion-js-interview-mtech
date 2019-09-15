@@ -24,13 +24,13 @@
 }
 
 #add-btn {
-    padding: 24px;
+    padding: 20px;
     border: 1px solid black;
 }
 
 .edit-input {
     min-width: 270px;
-    padding-bottom: 10px;
+    padding-bottom: 5px;
 }
 
 .edit-check {
