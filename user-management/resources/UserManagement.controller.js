@@ -77,13 +77,15 @@ angular.module('app').controller('UserManagementController',
         user.email = user.emailEdit;
         // call service
         var index = getIndexOfUser(user, $scope.usersList);
-        UserManagementService.updateUser(user).then(
+        return UserManagementService.updateUser(user).then(
             function successCallback(response){
                 // replace the user with the updated user
                 $scope.usersList[index] = response;
+                return response;
             }, function errorCallback(response){
                 // revert the user
                 $scope.usersList[index] = userCopy;
+                return response;
             }
         );
     }
