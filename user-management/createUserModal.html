@@ -8,6 +8,6 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="createOkClicked()">OK</button>
+    <button class="btn btn-primary" type="button" ng-click="createOkClicked()" ng-disabled="createUser.name.length===0 || createUser.email.length===0">OK</button>
     <button class="btn btn-warning" type="button" ng-click="createCancelClicked()">Cancel</button>
 </div>

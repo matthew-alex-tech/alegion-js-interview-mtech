@@ -3,7 +3,10 @@ mocks.service('UserManagementService', function ($q) {
     var usersList = [
         {"id": 7, "first_name": "Michael", "last_name": "Lawson", "email" : "michael.lawson@reqres.in"},
         {"id": 8, "first_name": "Lindsay", "last_name": "Ferguson", "email" : "lindsay.ferguson@reqres.in"},
+        {"id": 9, "first_name": "Tobias", "last_name": "Funke", "email" : "tobias.funke@reqres.in"},
+        {"id": 10, "first_name": "Byron", "last_name": "Fields", "email" : "byron.fields@reqres.in"},
     ];
+    var nextId = 11;
 
     this.getUsersList = function () {
         // return a promise, since the real service returns a http promise
@@ -26,6 +29,20 @@ mocks.service('UserManagementService', function ($q) {
             deferred.reject("rejecting just because!");
             return deferred.promise;
         }
+    };
+
+    this.deleteUser = function(user) {
+        var deferred = $q.defer();
+        deferred.resolve("done");
+        return deferred.promise;
+    };
+
+    this.createUser = function(user) {
+        var deferred = $q.defer();
+        user.id = nextId++;
+        user.createdAt = Date.now();
+        deferred.resolve(user);
+        return deferred.promise;
     };
 });
 
@@ -138,6 +155,84 @@ describe('UserManagementController', function() {
             expect($scope.usersList[0].nameOrig).toBe("Michael Lawson");
             var index = $scope.getIndexOfUser($scope.usersList[0]);
             expect(index).toBe(0);
+
+            // test user not found condition
+            var newUser = {id: 1000, name: "test"};
+            index = $scope.getIndexOfUser(newUser);
+            expect(index).toBe(-1);
+        });
+    });
+
+    describe('$scope.deleteUserFromList', function() {
+        var $scope, controller, svc;
+
+        beforeEach(function() {
+            $scope = $rootScope.$new();
+            svc = UserManagementService;
+            controller = $controller('UserManagementController', { $scope: $scope, UserManagementService: svc });
+        });
+
+        it('test delete user from list', function(done) {
+            // get the list of users from the service
+            $scope.loadUsersList();
+            $rootScope.$digest();
+
+            // delete the first user
+            expect($scope.usersList.length).toBe(4);
+            expect($scope.usersList[0].nameOrig).toBe("Michael Lawson");
+            $scope.deleteUserFromList($scope.usersList[0]);
+            $rootScope.$digest();
+            expect($scope.usersList.length).toBe(3);
+            expect($scope.usersList[0].nameOrig).toBe("Lindsay Ferguson");
+
+            // delete the last user
+            $scope.deleteUserFromList($scope.usersList[2]);
+            $rootScope.$digest();
+            expect($scope.usersList.length).toBe(2);
+            expect($scope.usersList[0].nameOrig).toBe("Lindsay Ferguson");
+            expect($scope.usersList[1].nameOrig).toBe("Tobias Funke");
+
+            // test user not found condition
+            var newUser = {id: 1000, name: "test"};
+            $scope.deleteUserFromList(newUser);
+            $rootScope.$digest();
+            expect($scope.usersList.length).toBe(2);
+
+            // wait for the promise to be fulfilled before exiting
+            done();
+        });
+    });
+
+    describe('$scope.addUserToList', function() {
+        var $scope, controller, svc;
+
+        beforeEach(function() {
+            $scope = $rootScope.$new();
+            svc = UserManagementService;
+            controller = $controller('UserManagementController', { $scope: $scope, UserManagementService: svc });
+        });
+
+        it('test add user to list', function(done) {
+            // get the list of users from the service
+            $scope.loadUsersList();
+            $rootScope.$digest();
+
+            // create a new user
+            expect($scope.usersList.length).toBe(4);
+            $scope.createUser.name = "George Edwards";
+            $scope.createUser.email = "george.edwards@reqres.in";
+            $scope.addUserToList();
+            $rootScope.$digest();
+            expect($scope.usersList.length).toBe(5);
+            expect($scope.usersList[4].nameOrig).toBe("George Edwards");
+            expect($scope.usersList[4].email).toBe("george.edwards@reqres.in");
+            expect($scope.usersList[4].id).toBe(11);
+            expect($scope.usersList[4].createdAt).not.toBeUndefined();
+            expect($scope.createUser.name).toBe("");
+            expect($scope.createUser.email).toBe("");
+
+            // wait for the promise to be fulfilled before exiting
+            done();
         });
     });
 });

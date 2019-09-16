@@ -151,7 +151,7 @@ angular.module('app').controller('UserManagementController',
     */
     $scope.deleteUserFromList = function(user) {
         // call service
-        UserManagementService.deleteUser(user).then(
+        return UserManagementService.deleteUser(user).then(
             function successCallback(response){
                 $scope.clearDeleteDialogVariables();
                 // only on success
@@ -215,7 +215,7 @@ angular.module('app').controller('UserManagementController',
         };
 
         // call service
-        UserManagementService.createUser(user).then(
+        return UserManagementService.createUser(user).then(
             function successCallback(response){
                 // only on success
                 $scope.usersList.push(response);
