@@ -43,15 +43,21 @@
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
-                                    <p class="card-title" ng-show="!inEditMode || userInEdit!==user">{{user.nameOrig}}</p>
+                                    <p class="my-card-name" ng-show="!inEditMode || userInEdit!==user">{{user.nameOrig}}</p>
                                     <input class="edit-input" type="text" ng-show="inEditMode && userInEdit===user" class="card-title" ng-model="user.nameEdit"/>
-                                    <p class="card-text" ng-show="!inEditMode || userInEdit!==user">{{user.email}}</p>
+                                    <p class="my-card-email" ng-show="!inEditMode || userInEdit!==user">{{user.email}}</p>
                                     <input class="edit-input" type="text" ng-show="inEditMode && userInEdit===user" class="card-title" ng-model="user.emailEdit"/>
-                                    <button class="btn" ng-show="!inEditMode" ng-click="editUserClick(user)"><i class="fa fa-edit" style="font-size:36px"></i></button>
-                                    <button class="btn" ng-show="!inEditMode" ng-click="deleteUserClick(user, usersList)"><i class="fa fa-trash" style="font-size:36px"></i></button>
-                                    <button class="btn" ng-show="inEditMode && userInEdit===user" ng-click="acceptEditClick(user)" ng-disabled="disableAcceptEdit(user)"><i class="edit-check fa fa-check"></i></button>
-                                    <button class="btn" ng-show="inEditMode && userInEdit===user" ng-click="cancelEditClick(user)"><i class="edit-close fa fa-close"></i></button>
-                                </div>
+
+                                    <p class="my-card-time" ng-show="user.createdAt !== undefined">Created: {{user.createdAt}}</p>
+                                    <p class="my-card-time" ng-show="user.createdAt === undefined">Created: N/A</p>
+                                    <p class="my-card-time" ng-show="user.updatedAt !== undefined">Updated: {{user.updatedAt}}</p>
+                                    <p class="my-card-time" ng-show="user.updatedAt === undefined">Updated: N/A</p>
+
+                                    <button class="my-card-btn btn" ng-show="!inEditMode" ng-click="editUserClick(user)"><i class="fa fa-edit" style="font-size:28px"></i></button>
+                                    <button class="my-card-btn btn" ng-show="!inEditMode" ng-click="deleteUserClick(user, usersList)"><i class="fa fa-trash" style="font-size:28px"></i></button>
+                                    <button class="my-card-btn btn" ng-show="inEditMode && userInEdit===user" ng-click="acceptEditClick(user)" ng-disabled="disableAcceptEdit(user)"><i class="edit-check fa fa-check"></i></button>
+                                    <button class="my-card-btn btn" ng-show="inEditMode && userInEdit===user" ng-click="cancelEditClick(user)"><i class="edit-close fa fa-close"></i></button>
+                                </span>
                             </div>
                         </div>
                     </div>

@@ -49,18 +49,43 @@ angular.module('app').controller('UserManagementController',
     }
 
     /**
+    * @return the index of userToFind in usersList, or -1 if the userToFind is not in the usersList.
+    */
+    function getIndexOfUser(userToFind, usersList) {
+        var indexToReturn = -1;
+        for (var i=0; i < usersList.length; i++) {
+            var user = usersList[i];
+            if (user.id === userToFind.id) {
+                indexToReturn = i;
+                break;
+            }
+        }
+        return indexToReturn;
+    }
+
+    /**
     * Event when the accept edit check button for the specified user is clicked.
     */
     $scope.acceptEditClick = function(user) {
         // turn off edit mode
         $scope.inEditMode = false;
         $scope.userInEdit = {};
+        // make a copy of the user before the user, in case the update fails
+        var userCopy = JSON.parse(JSON.stringify(user));
+        // update the base name and email to the edited values
+        user.nameOrig = user.nameEdit;
+        user.email = user.emailEdit;
         // call service
-        UserManagementService.updateUser(user).then(function(response){
-            // update the base name and email to the edited values
-            user.nameOrig = user.nameEdit;
-            user.email = user.emailEdit;
-        });
+        var index = getIndexOfUser(user, $scope.usersList);
+        UserManagementService.updateUser(user).then(
+            function successCallback(response){
+                // replace the user with the updated user
+                $scope.usersList[index] = response;
+            }, function errorCallback(response){
+                // revert the user
+                $scope.usersList[index] = userCopy;
+            }
+        );
     }
 
     /**
@@ -83,37 +108,39 @@ angular.module('app').controller('UserManagementController',
         var modalInstance = $uibModal.open({
             templateUrl: 'deleteModal.html',
             controller: function ($scope, $uibModalInstance) {
-                $scope.username = user.nameOrig;
+                $scope.username = user.nameOrig; // for display in confirm dialog
 
+                // ok button clicked
                 $scope.ok = function () {
                     $uibModalInstance.close();
-                    console.log(user);
-                    // call service
-                    UserManagementService.deleteUser(user).then(function(response){
-                        // only on success
-                        $scope.deleteUserFromList(user, usersList);
-                    });
+                    deleteUserFromList(user, usersList);
                 };
 
+                // cancel button clicked
                 $scope.cancel = function () {
                     $uibModalInstance.dismiss('cancel');
                 };
-
-                $scope.deleteUserFromList = function(userToDelete, usersList) {
-                    var indexToDelete = -1;
-                    for (var i=0; i < usersList.length; i++) {
-                        var user = usersList[i];
-                        if (user.id === userToDelete.id) {
-                            indexToDelete = i;
-                        }
-                    }
-                    if (indexToDelete >= 0) {
-                        usersList.splice(indexToDelete, 1);
-                    }
-                }
             }
         });
+
+        // prevent error message in log; callbacks are handled in controller
         modalInstance.result.then(function(){}, function(res){});
+    }
+
+    /**
+    * Call the service to delete the user; if successful then remove from the UI list
+    */
+    function deleteUserFromList(user, usersList) {
+        // call service
+        UserManagementService.deleteUser(user).then(
+            function successCallback(response){
+                // only on success
+                var indexToDelete = getIndexOfUser(user, usersList);
+                if (indexToDelete >= 0) {
+                    usersList.splice(indexToDelete, 1);
+                }
+            }
+        );
     }
 
     /**
@@ -124,9 +151,10 @@ angular.module('app').controller('UserManagementController',
         var modalInstance = $uibModal.open({
             templateUrl: 'createUserModal.html',
             controller: function ($scope, $uibModalInstance) {
-                $scope.inputName = "";
-                $scope.inputEmail = "";
+                $scope.inputName = ""; // holds value for new user
+                $scope.inputEmail = ""; // holds value for new user
 
+                // ok button clicked
                 $scope.ok = function () {
                     $uibModalInstance.close();
                     // call service
@@ -136,19 +164,31 @@ angular.module('app').controller('UserManagementController',
                         email: $scope.inputEmail,
                         emailEdit: $scope.inputEmail
                     }
-                    UserManagementService.createUser(user).then(function(response){
-                        // only on success
-                        user.id = response.data.id;
-                        usersList.push(user);
-                    });
+                    addUserToList(user, usersList);
                 };
 
+                // cancel button clicked
                 $scope.cancel = function () {
                     $uibModalInstance.dismiss('cancel');
                 };
             }
         });
+
+        // prevent error message in log; callbacks are handled in controller
         modalInstance.result.then(function(){}, function(res){});
+    }
+
+    /**
+    * Call the service to create the user; if successful then add to the UI list
+    */
+    function addUserToList(user, usersList) {
+        // call service
+        UserManagementService.createUser(user).then(
+            function successCallback(response){
+                // only on success
+                usersList.push(response);
+            }
+        );
     }
 
 }]);

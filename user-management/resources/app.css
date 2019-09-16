@@ -24,17 +24,18 @@
 }
 
 #add-btn {
-    padding: 20px;
+    height: 100%;
+    width: 75%;
     border: 1px solid black;
 }
 
 .edit-input {
     min-width: 270px;
-    padding-bottom: 5px;
+    padding: 0px;
 }
 
 .edit-check {
-    font-size: 36px;
+    font-size: 28px;
     color: green;
 }
 .edit-check .btn.disabled, .btn:disabled {
@@ -42,12 +43,42 @@
 }
 
 .edit-close {
-    font-size: 36px;
+    font-size: 28px;
     color: red;
 }
 
 .card-columns {
     column-count: 2;
+}
+.card-body {
+    padding: 15px;
+}
+
+.my-card-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+.my-card-email {
+    font-size: 16px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.my-card-time {
+    font-size: 14px;
+    font-style: italic;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.my-card-btn {
+    padding-left: 0px;
+    padding-right: 10px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 
 .modal-open .modal {

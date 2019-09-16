@@ -6,27 +6,33 @@ angular.module('app').factory('UserManagementService', ['$http', function($http)
     * @return a promise for an array of user JSON objects.
     */
     svc.getUsersList = function() {
-        return $http.get('https://reqres.in/api/users')
-            .then(function(response) {
-                // TODO error handling
-                console.log(response);
+        return $http.get('https://reqres.in/api/users').then(
+            function successCallback(response) {
+//                console.log(response);
                 var usersList = response.data.data;
                 return usersList;
-            })
+            }, function errorCallback(response){
+                console.log(response);
+                return response;
+            }
+        )
     }
 
     /**
     * PUT the updated user to the reqres API.
-    * @return a promise that returns the HTTP response when the PUT is done.
+    * @return a promise that returns the updated user JSON when the PUT is done.
     */
     svc.updateUser = function(user) {
         var url = "https://reqres.in/api/users/" + user.id;
-        return $http.put(url, user)
-            .then(function(response) {
-                // TODO error handling
+        return $http.put(url, user).then(
+            function successCallback(response) {
+//                console.log(response);
+                return response.data;
+            }, function errorCallback(response){
                 console.log(response);
                 return response;
-            })
+            }
+        )
     }
 
     /**
@@ -35,13 +41,15 @@ angular.module('app').factory('UserManagementService', ['$http', function($http)
     */
     svc.deleteUser = function(user) {
         var url = "https://reqres.in/api/users/" + user.id;
-        return $http.delete(url)
-            .then(function(response) {
-                // TODO error handling
-                console.log("delete:");
+        return $http.delete(url).then(
+            function successCallback(response) {
+//                console.log(response);
+                return response;
+            }, function errorCallback(response){
                 console.log(response);
                 return response;
-            })
+            }
+        )
     }
 
     /**
@@ -50,13 +58,15 @@ angular.module('app').factory('UserManagementService', ['$http', function($http)
     */
     svc.createUser = function(user) {
         var url = "https://reqres.in/api/users";
-        return $http.post(url, user)
-            .then(function(response) {
-                // TODO error handling
-                console.log("create:");
+        return $http.post(url, user).then(
+            function successCallback(response) {
+//                console.log(response);
+                return response.data;
+            }, function errorCallback(response){
                 console.log(response);
                 return response;
-            })
+            }
+        )
     }
 
     return svc;
