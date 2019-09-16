@@ -16,7 +16,6 @@ mocks.service('UserManagementService', function ($q) {
     this.updateUser = function(user) {
         if (user.id === 7) { // return success
             user.updatedAt = Date.now();
-            // return a promise, since the real service returns a http promise
             var deferred = $q.defer();
             deferred.promise.data = user;
             deferred.resolve(user);
@@ -24,9 +23,7 @@ mocks.service('UserManagementService', function ($q) {
         }
         else { // return error
             var deferred = $q.defer();
-            var message = "rejecting just because!"
-//            deferred.promise.data = message;
-            deferred.reject(message);
+            deferred.reject("rejecting just because!");
             return deferred.promise;
         }
     };
@@ -51,11 +48,12 @@ describe('UserManagementController', function() {
             var controller = $controller('UserManagementController', { $scope: $scope, UserManagementService: svc });
             $scope.loadUsersList().then(function (result) {
                 expect($scope.usersList).toBe(result);
-                expect($scope.usersList.length).toBe(2);
+                expect($scope.usersList.length).toBeGreaterThan(1);
                 expect($scope.usersList[0].first_name).toBe("Michael");
                 expect($scope.usersList[0].nameOrig).toBe("Michael Lawson");
                 expect($scope.usersList[0].nameEdit).toBe("Michael Lawson");
                 expect($scope.usersList[0].emailEdit).toBe("michael.lawson@reqres.in");
+                expect($scope.usersList[1].nameOrig).toBe("Lindsay Ferguson");
             });
 
             // wait for the promise to be fulfilled before exiting
@@ -118,6 +116,28 @@ describe('UserManagementController', function() {
             // wait for the promise to be fulfilled before exiting
             $rootScope.$digest();
             done();
+        });
+    });
+
+    describe('$scope.getIndexOfUser', function() {
+        var $scope, controller, svc;
+
+        beforeEach(function() {
+            $scope = $rootScope.$new();
+            svc = UserManagementService;
+            controller = $controller('UserManagementController', { $scope: $scope, UserManagementService: svc });
+        });
+
+        it('test get index of user function', function() {
+            // get the list of users from the service
+            $scope.loadUsersList();
+            $rootScope.$digest();
+
+            // make an edit on the first user
+            expect($scope.usersList.length).toBeGreaterThan(1);
+            expect($scope.usersList[0].nameOrig).toBe("Michael Lawson");
+            var index = $scope.getIndexOfUser($scope.usersList[0]);
+            expect(index).toBe(0);
         });
     });
 });

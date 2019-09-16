@@ -3,11 +3,11 @@
 </div>
 
 <div class="modal-body">
-    <p>Enter name: <input type="text" style="min-width:350px" ng-model="inputName"/></p>
-    <p>Enter email: <input type="text" style="min-width:350px" ng-model="inputEmail"/></p>
+    <p>Enter name: <input type="text" style="min-width:350px" ng-model="createUser.name"/></p>
+    <p>Enter email: <input type="text" style="min-width:350px" ng-model="createUser.email"/></p>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
-    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary" type="button" ng-click="createOkClicked()">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="createCancelClicked()">Cancel</button>
 </div>
